@@ -1,23 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from  'prop-types';
+import React from 'react';
+import { string, func } from  'prop-types';
 
+Search.propTypes = {
+  value: string.isRequired,
+  onChange: func.isRequired,
+};
 
-export default class Search extends Component {
-  static propTypes = {
-    value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-  }
-
-  render() {
-    const { value, onChange } = this.props;
-    return (
-      <form>
-        <input
-          type="text"
-          value={value}
-          onChange={onChange}
-        />
-      </form>
-    );
-  }
+export default function Search({ value, onChange, children }) {
+  return (
+    <form>
+      {children} <input
+        type="text"
+        value={value}
+        onChange={onChange}
+      />
+    </form>
+  );
 }
