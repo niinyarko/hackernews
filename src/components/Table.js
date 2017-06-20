@@ -1,9 +1,6 @@
 import React from 'react';
-import { array, string, func } from 'prop-types';
+import { array, func } from 'prop-types';
 import Button from './Button';
-
-const isSearched = searchTerm => item => 
-  !searchTerm || item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 const largeColumn = {
   width: '40%',
@@ -17,14 +14,13 @@ const smallColumn = {
 
 Table.propTypes = {
   list: array.isRequired,
-  pattern: string.isRequired,
   onDismiss: func.isRequired
 };
 
-export default function Table({ list, pattern, onDismiss }) {
+export default function Table({ list, onDismiss }) {
   return (
     <div className="table">
-      {list.filter(isSearched(pattern)).map(item => {
+      {list.map(item => {
         return (
           <div key={item.objectID} className="table-row">
             <span

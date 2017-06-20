@@ -9,25 +9,6 @@ const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 
-const list = [
-  {
-    title: 'React',
-    url: 'https://facebook.github.io/react/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://github.com/reactjs/redux',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +18,7 @@ class App extends Component {
       searchTerm: DEFAULT_QUERY,
     };
 
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.setSearchTopstories = this.setSearchTopstories.bind(this);
     this.fetchSearchTopstories = this.fetchSearchTopstories.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
@@ -45,12 +27,18 @@ class App extends Component {
 
   onDismiss(id) {
     const isNotId = item => item.objectID !== id;
-    const updatedList = this.state.list.filter(isNotId);
-    this.setState({ list: updatedList });
+    const updatedList = this.state.result.hits.filter(isNotId);
+    this.setState({ result: { ...this.state.result, hits: updatedList } });
   }
 
   onSearchChange(event) {
     this.setState({ searchTerm: event.target.value });
+  }
+
+  onSearchSubmit(event) {
+    const { searchTerm } = this.state;
+    this.fetchSearchTopstories(searchTerm);
+    event.preventDefault();
   }
 
   setSearchTopstories(result) {
@@ -77,17 +65,20 @@ class App extends Component {
       <div className="page">
         <div className="interactions">
           <Search
-          value={searchTerm} 
-          onChange={this.onSearchChange} 
+            value={searchTerm} 
+            onChange={this.onSearchChange}
+            onSubmit={this.onSearchSubmit}
           >
             Search
           </Search>
         </div>
-        <Table
-          list={result.hits} 
-          pattern={searchTerm} 
-          onDismiss={this.onDismiss}
-        />
+        {result
+          ? <Table
+            list={result.hits} 
+            onDismiss={this.onDismiss}
+          />
+          : null
+        }
       </div>
     );
   }
